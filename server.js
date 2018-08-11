@@ -12,12 +12,25 @@ app.use(formidable());
 
 app.post('/create-post', function(request, response){ //handler function
 	var now = Date.now();
-
 	var newPost = {
 		timestamp: now,
 		content: request.fields.blogpost
 	}
-	response.send(newPost); //server response converts object to a JSON string
+
+	fs.readFile(__dirname+'/data/posts.json', function(error, data){
+		if (error){
+			console.log('Error reading posts.json: '+error);
+			response.status(500);
+			response.send(error);
+		} else {
+			var posts = JSON.parse(data);
+			posts.blogposts.push(newPost);
+			console.log(posts.blogposts)
+			
+			response.send(newPost);
+		}
+	});
+	//response.send(newPost); //server response converts object to a JSON string
 
 });
 
@@ -29,7 +42,8 @@ app.get('/get-posts', function(request, response){ //handler function for /get-p
 			response.status(500);
 			response.sent(error);
 		} else {
-			response.send(data.toString());// else convert the data buffer to a string and send that as a response
+
+			response.send(data);// else convert the data buffer to a string and send that as a response
 		}
 	});
 });
