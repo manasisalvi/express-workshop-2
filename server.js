@@ -11,7 +11,14 @@ app.use(express.static("public"));
 app.use(formidable());
 
 app.post('/create-post', function(request, response){ //handler function
-	console.log(request.fields);
+	var now = Date.now();
+
+	var newPost = {
+		timestamp: now,
+		content: request.fields.blogpost
+	}
+	response.send(newPost); //server response converts object to a JSON string
+
 });
 
 app.get('/get-posts', function(request, response){ //handler function for /get-posts
